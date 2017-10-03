@@ -9,18 +9,12 @@
       <w>210</w>
       <h>190</h>
     </coordinates>
-    <panel_attributes>Package::FatClass
-{Some Properties}
+    <panel_attributes>*Package::#NAME#*
 --
--id: Long {composite}
-_-ClassAttribute: Long_
+#ATTRIBUTES#
 --
-#Operation(i: int): int
-/+AbstractOperation()/
---
-Responsibilities
--- Resp1
--- Resp2</panel_attributes>
+#METHODS#
+</panel_attributes>
     <additional_attributes/>
   </element>
 </diagram>
