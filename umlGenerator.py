@@ -2,7 +2,7 @@ import argparse
 
 class umlGenerator():
     """
-    Open the source file, header fila and scope database and generate
+    Open the source file, header file and scope database and generate
     and UMLet file with the class diagram of this component.
     """
     def __init__(self, name, path):
@@ -47,14 +47,20 @@ class umlGenerator():
         for f in fctags:
             if self.swcName+'.h' in f and len(f.split('\t')) > 3:
                 if f.split('\t')[3] == 'p':
-                    self.publicMethods.append(f.split('\t')[0])
+                    self.publicMethods.append([])
+                    self.publicMethods[-1].append(f.split('\t')[0])
+                    self.publicMethods[-1].append(f.split('\t')[2].split(' ')[0][2:])
         fctags.seek(0)
         for f in fctags:
             if self.swcName+'.c' in f and len(f.split('\t')) >= 3:
                 if f.split('\t')[3].replace('\n','') == 'f' and f.split('\t')[0] not in self.publicMethods:
-                    self.privateMethods.append(f.split('\t')[0])
+                    self.privateMethods.append([])
+                    self.privateMethods[-1].append(f.split('\t')[0])
+                    self.privateMethods[-1].append(f.split('\t')[2].split(' ')[0][2:])
                 if f.split('\t')[3].replace('\n','') == 'v':
-                    self.privateAttributes.append(f.split('\t')[0])
+                    self.privateAttributes.append([])
+                    self.privateAttributes[-1].append(f.split('\t')[0])
+                    self.privateAttributes[-1].append(f.split('\t')[2].split(' ')[0][2:])
 
         fctags.close()
 
@@ -69,14 +75,14 @@ class umlGenerator():
         for line in fin:
             if "#ATTRIBUTES#" in line:
                 for method in self.publicAttributes:
-                    fout.write("+ %s\n"%method)
+                    fout.write("+ %s: %s\n"%(method[0], method[1]))
                 for method in self.privateAttributes:
-                    fout.write("- %s\n"%method)
+                    fout.write("+ %s: %s\n"%(method[0], method[1]))
             elif "#METHODS#" in line:
                 for method in self.publicMethods:
-                    fout.write("+ %s\n"%method)
+                    fout.write("+ %s: %s\n"%(method[0], method[1]))
                 for method in self.privateMethods:
-                    fout.write("- %s\n"%method)
+                    fout.write("+ %s: %s\n"%(method[0], method[1]))
             elif "#NAME#" in line:
                 fout.write(line.replace("#NAME#", self.swcName))
             elif "<h>" in line:
