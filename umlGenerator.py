@@ -50,6 +50,7 @@ class umlGenerator():
                     self.publicMethods.append([])
                     self.publicMethods[-1].append(f.split('\t')[0])
                     self.publicMethods[-1].append(f.split('\t')[2].split(' ')[0][2:])
+                    self.publicMethods[-1].append(f.split('\t')[4].split('(')[1].split(')')[0])
         fctags.seek(0)
         for f in fctags:
             if self.swcName+'.c' in f and len(f.split('\t')) >= 3:
@@ -57,6 +58,7 @@ class umlGenerator():
                     self.privateMethods.append([])
                     self.privateMethods[-1].append(f.split('\t')[0])
                     self.privateMethods[-1].append(f.split('\t')[2].split(' ')[0][2:])
+                    self.privateMethods[-1].append(f.split('\t')[4].split('(')[1].split(')')[0])
                 if f.split('\t')[3].replace('\n','') == 'v':
                     self.privateAttributes.append([])
                     self.privateAttributes[-1].append(f.split('\t')[0])
@@ -77,12 +79,12 @@ class umlGenerator():
                 for method in self.publicAttributes:
                     fout.write("+ %s: %s\n"%(method[0], method[1]))
                 for method in self.privateAttributes:
-                    fout.write("+ %s: %s\n"%(method[0], method[1]))
+                    fout.write("- %s: %s\n"%(method[0], method[1]))
             elif "#METHODS#" in line:
                 for method in self.publicMethods:
-                    fout.write("+ %s: %s\n"%(method[0], method[1]))
+                    fout.write("+ %s(%s): %s\n"%(method[0], method[2], method[1]))
                 for method in self.privateMethods:
-                    fout.write("+ %s: %s\n"%(method[0], method[1]))
+                    fout.write("- %s(%s): %s\n"%(method[0], method[2], method[1]))
             elif "#NAME#" in line:
                 fout.write(line.replace("#NAME#", self.swcName))
             elif "<h>" in line:
@@ -90,7 +92,7 @@ class umlGenerator():
                         + len(self.privateMethods)\
                         + len(self.privateAttributes)\
                         + len(self.publicMethods)\
-                        + len(self.publicAttributes)) * 15))
+                        + len(self.publicAttributes)) * 15 + 10))
             else:
                 fout.write(line)
 
@@ -102,11 +104,13 @@ class umlGenerator():
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Create UML fromo SW component')
+    parser = argparse.ArgumentParser(description='Create UML from SW component')
     parser.add_argument('name', metavar='N', type=str,
                     help='Name of the sowfware component that will be parse')
+    parser.add_argument('path', metavar='N', type=str,
+                    help='Path to the component location')
     args = parser.parse_args()
-    umlGen = umlGenerator(args.name, '../parchis')
+    umlGen = umlGenerator(args.name, args.path)
 
     umlGen.parse_ctags()
     umlGen.generate_uml_file()

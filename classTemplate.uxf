@@ -4,9 +4,9 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>190</x>
-      <y>130</y>
-      <w>210</w>
+      <x>50</x>
+      <y>50</y>
+      <w>600</w>
       <h>190</h>
     </coordinates>
     <panel_attributes>*Package::#NAME#*
